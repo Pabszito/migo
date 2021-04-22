@@ -1,0 +1,31 @@
+{
+  "name": "blacklist",
+  "version": "1.0.0",
+  "description": "Blacklist",
+  "main": "src/index.js",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "js-yaml": "^3.14.0",
+    "mongoose": "^5.9.28"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pabszito/discord-bot-template.git"
+  },
+  "keywords": [
+    "template",
+    "discord",
+    "discord.js"
+  ],
+  "author": "Pabszito",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Pabszito/discord-bot-template/issues"
+  },
+  "homepage": "https://github.com/Pabszito/discord-bot-template#readme"
+}

@@ -1,0 +1,6 @@
+{
+    "token" : "discord token",
+    "prefix" : "-",
+    "uri" : "mongo uri",
+    "lastReportId" : "0"
+}
