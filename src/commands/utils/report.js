@@ -10,8 +10,9 @@ module.exports = {
 
       let reportedUser = message.mentions.users.first();
 
+      const attachments = message.attachments.size ? message.attachments.map(attachment => attachment.proxyURL) : null;
       if(!args[1]) return message.channel.send(`:x: | Necesitas especificar un usuario y una razon!`);
-      if(!message.attachments.first()) return message.channel.send(`:x: | Necesitas subir una imagen que funcione como evidencia!`)
+      if(attachments == null) return message.channel.send(`:x: | Necesitas subir una imagen que funcione como evidencia!`)
       
       let reportId = parseInt(client.config.lastReportId) + 1;
       let config = client.config;
@@ -20,20 +21,14 @@ module.exports = {
 
       await fs.writeFileSync('./config.json', JSON.stringify(config), 'utf8');
 
-      let attachments = [];
-      if(message.attachments.first()) {
-            attachments = {
-              image: message.attachments.first().url
-            };
-      }
-
       let embed = new Discord.MessageEmbed()
           .setAuthor(message.author.tag, message.author.displayAvatarURL())
-          .setDescription(`Hemos recibido un reporte nuevo!`)
-          .addField(`Reportado:`, `${reportedUser.tag} (ID: ${reportedUser.id})`)
-          .addField("Razon:", `${args.slice(1).join(" ")}`)
+          .setTitle(`Hemos recibido un reporte nuevo!`)
           .addField("Reportante:", `${message.author.tag} (ID: ${message.author.id})`)
-          .addField("Archivos adjuntos:", "[Imagen](" + attachments.image + ")")
+          .addField(`Reportado:`, `${reportedUser.tag} (ID: ${reportedUser.id})`)
+          .addField("Razón:", `${args.slice(1).join(" ")}`)
+          .addField("Archivos adjuntos:", '‎', false)
+          .setImage(`${attachments ? `${attachments.join('\n')}` : null}`)
           .setFooter(`Migo • #${reportId}`, client.user.displayAvatarURL())
           .setTimestamp();
 
@@ -45,7 +40,7 @@ module.exports = {
             author: message.author.id,
             reportedMember: reportedUser.id,
             reason: args.slice(1).join(" "),
-            image: attachments.image
+            image: attachments.join('\n')
       });
 
       report.save();

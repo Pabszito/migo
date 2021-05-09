@@ -39,16 +39,22 @@ module.exports = {
                 .setDescription(`El siguiente reporte fue aceptado por ${message.author.tag}:`)
                 .addField("Reportante", author.tag + " (ID: " + author.id + ")")
                 .addField("Reportado", reportedMember.tag + " (ID: " + reportedMember.id + ")")
-                .addField("Razon", res.reason)
-                .addField("Pruebas", `[Imagen](${res.image})`)
+                .addField("Razón", res.reason)
+                .addField("Respuesta", args[1] ? args.slice(1).join(" ") : "Gracias por reportar.")
+                .addField("Pruebas:", '‎', false)
+                .setImage(`${res.image}`)
                 .setFooter("Migo • #" + res.id, client.user.displayAvatarURL())
                 .setTimestamp();
 
-            if(args[1]) embed.addField(`Respuesta`, args.slice(1).join(" "))
-
             client.channels.cache.get("770705035650269204").send(embed);
 
-            ReportSchema.findOneAndDelete({ id: args[0] });
+            ReportSchema.findOneAndRemove({id: args[0]}, function (err, report) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log("Removed Report : ", report);
+                }
+            });
             message.channel.send(`:white_check_mark: | Has aceptado el reporte con ID \`${args[0]}\`!`)
         });
     }
