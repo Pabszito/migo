@@ -21,7 +21,7 @@ module.exports = {
 				.then(msg => {
 					msg.delete();
 				}).catch(console.error);
-			
+
             /**
             * id: Number,
             * messageId: String,
@@ -39,17 +39,26 @@ module.exports = {
                 .setDescription(`El siguiente reporte fue rechazado por ${message.author.tag}:`)
                 .addField("Reportante", author.tag + " (ID: " + author.id + ")")
                 .addField("Reportado", reportedMember.tag + " (ID: " + reportedMember.id + ")")
-                .addField("Razon", res.reason)
-                .addField("Pruebas", `[Imagen](${res.image})`)
+                .addField("Razón", res.reason)
+                .addField("Respuesta", args[1] ? args.slice(1).g
+
+                    queueMicrotask(q)join(" ") : "Reporte denegado.")
+                .addField("Pruebas:", '‎', false)
+                .setImage(`${res.image}`)
                 .setFooter("Migo • #" + res.id, client.user.displayAvatarURL())
                 .setTimestamp();
 
-            console.log(res); 
-            if(args[1]) embed.addField(`Respuesta`, args.slice(1).join(" "))
+            console.log(res);
 
             client.channels.cache.get("770705035650269204").send(embed);
 
-            ReportSchema.findOneAndRemove({ id: args[0] }); // this isn't working at all but ok
+            ReportSchema.findOneAndRemove({id: args[0]}, function (err, report) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log("Removed Report : ", report);
+                }
+            });
             message.channel.send(`:white_check_mark: | Has rechazado el reporte con ID \`${args[0]}\`!`)
         });
     }
