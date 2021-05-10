@@ -12,7 +12,7 @@ module.exports = {
 
       const attachments = message.attachments.size ? message.attachments.map(attachment => attachment.proxyURL) : null;
       if(!args[1]) return message.channel.send(`:x: | Necesitas especificar un usuario y una razon!`);
-      if(attachments == null) return message.channel.send(`:x: | Necesitas subir una imagen que funcione como evidencia!`)
+      if(!attachments) return message.channel.send(`:x: | Necesitas subir una imagen que funcione como evidencia!`)
       
       let reportId = parseInt(client.config.lastReportId) + 1;
       let config = client.config;
