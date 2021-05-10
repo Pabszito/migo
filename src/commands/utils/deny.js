@@ -48,15 +48,13 @@ module.exports = {
                 .setFooter("Migo • #" + res.id, client.user.displayAvatarURL())
                 .setTimestamp();
 
-            console.log(res);
-
             client.channels.cache.get("770705035650269204").send(embed);
 
             ReportSchema.findOneAndRemove({id: args[0]}, function (err, report) {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log("Removed Report : ", report);
+                    console.log("Removed report: ", report);
                 }
             });
             message.channel.send(`:white_check_mark: | Has rechazado el reporte con ID \`${args[0]}\`!`)
