@@ -40,9 +40,7 @@ module.exports = {
                 .addField("Reportante", author.tag + " (ID: " + author.id + ")")
                 .addField("Reportado", reportedMember.tag + " (ID: " + reportedMember.id + ")")
                 .addField("Razón", res.reason)
-                .addField("Respuesta", args[1] ? args.slice(1).g
-
-                    queueMicrotask(q)join(" ") : "Reporte denegado.")
+                .addField("Respuesta", args[1] ? args.slice(1).join(" ") : "Reporte denegado.")
                 .addField("Pruebas:", '‎', false)
                 .setImage(`${res.image}`)
                 .setFooter("Migo • #" + res.id, client.user.displayAvatarURL())
