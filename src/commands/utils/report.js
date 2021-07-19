@@ -5,7 +5,7 @@ const fs = require('fs');
 module.exports = {
   name: "report",
   category: "utils",
-  description: "Reporta a un jugador!",
+  description: "Reporta a un usuario!",
   run: async(client, message, args, guild) => {
 
       let reportedUser = message.mentions.users.first();
