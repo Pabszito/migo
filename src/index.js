@@ -55,3 +55,5 @@ client
   .catch((err) =>
     console.error(`[INFO] An error occurred while logging in. (${err})`)
   );
+
+module.exports.client = client;
