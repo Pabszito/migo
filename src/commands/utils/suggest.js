@@ -1,39 +1,67 @@
-const SuggestSchema = require('../../schema/suggestion');
-const Discord = require('discord.js');
+const SuggestSchema = require("../../schema/suggestion");
+const { Interaction } = require("discord.js");
+const config = require("../../../config.json");
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const Command = require("../../command");
 
-module.exports = {
-  name: "suggest",
-  category: "utils",
-  description: "Haz una sugerencia!",
-  run: async(client, message, args, guild) => {
-      if(message.member.roles.cache.size <= 1)
-          return message.channel.send(`:x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!`);
+module.exports = class SuggestCommand extends Command {
+  constructor() {
+    super();
+    this.data = new SlashCommandBuilder()
+      .setName("test")
+      .setDescription("A command just for testing")
+      .addStringOption((option) =>
+        option
+          .setName("sugerencia")
+          .setDescription("La sugerencia que quieres enviar.")
+          .setRequired(true)
+      );
+  }
 
-      if(message.member.roles.cache.has("698332177137401989") && message.member.roles.cache.size === 2)
-          return message.channel.send(`:x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!`);
+  /**
+   *
+   * @param {Interaction} interaction
+   */
+  async execute(interaction) {
+    let user = interaction.member;
+    if (
+      user.roles.cache.size <= 1 ||
+      (user.roles.cache.has(config.utils.levelFiveRoleId) &&
+        user.roles.cache.size === 2)
+    ) {
+      interaction.reply(
+        ":x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!"
+      );
+      return;
+    }
 
-      if(!args[0]) return message.channel.send(`:x: | Necesitas especificar una sugerencia!`);
+    let embed = new Discord.MessageEmbed()
+      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setDescription(
+        `Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`
+      )
+      .addField(`Sugerencia:`, interaction.options.getString("sugerencia"))
+      .setTimestamp()
+      .setFooter("Migo", client.user.displayAvatarURL());
 
-      let embed = new Discord.MessageEmbed()
-          .setAuthor(message.author.tag, message.author.displayAvatarURL())
-          .setDescription(`Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`)
-          .addField(`Sugerencia:`, args.join(" "))
-          .setTimestamp()
-          .setFooter("Migo", client.user.displayAvatarURL());
+    client.channels.cache
+      .get(config.utils.suggestionChannel)
+      .send(embed)
+      .then(async (msg) => {
+        await msg.react(`✅`);
+        await msg.react(`❌`);
 
-      client.channels.cache.get("698332177997234218").send(embed).then(async(msg) => {
-          await msg.react(`✅`);
-          await msg.react(`❌`);
+        const suggestion = new SuggestSchema({
+          id: msg.id,
+          author: user.displayName,
+          content: interaction.options.getString("sugerencia"),
+        });
 
-          const suggestion = new SuggestSchema({
-              id: msg.id,
-              author: message.author.tag,
-              content: args.join(" ")
-          })
-
-          suggestion.save();
+        suggestion.save();
       });
 
-      return message.channel.send(`:white_check_mark: | Tu sugerencia fue enviada con exito, ${message.author}!`)
+    interaction.reply(
+      `:white_check_mark: | Tu sugerencia fue enviada con exito, puedes ver su progreso en <#${config.utils.suggestionChannel}>`
+    );
   }
 };
