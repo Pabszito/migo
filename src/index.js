@@ -15,6 +15,24 @@ const commandHandler = new CommandHandler();
   await commandHandler.deploy();
 })();
 
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) {
+    return;
+  }
+
+  const { commandName } = interaction;
+  const command = commandHandler.commands.get(commandName);
+
+  try {
+    command.execute(interaction);
+  } catch (e) {
+    interaction.reply(
+      "Algo salió mal, por favor contacta con un administrador. error: `COMMAND_NOT_FOUND`"
+    );
+    throw e;
+  }
+});
+
 // mongoose.connect(
 //   config.uri,
 //   {
