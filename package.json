@@ -4,11 +4,16 @@
   "description": "Bot used for Ajneb's discord server needs",
   "main": "src/index.js",
   "dependencies": {
-    "discord.js": "^12.2.0",
+    "@discordjs/builders": "^0.6.0",
+    "discord.js": "^13.1.0",
     "js-yaml": "^3.14.0",
     "mongoose": "^5.9.28"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.22.0",
+    "dotenv": "^10.0.0"
+  },
   "scripts": {
     "start": "node src/index.js",
     "test": "node src/index.js"
