@@ -1,18 +1,53 @@
-const {readdirSync} = require("fs");
+const Command = require("../command");
+const config = require("../../config.json");
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
+const { readdirSync } = require("fs");
 
-module.exports  = (client) => {
-    readdirSync("./src/commands/").forEach(async(dir) => {
-        const commands = readdirSync(`./src/commands/${dir}/`).filter(file => file.endsWith('.js'));
-        for(let file of commands) {
-            let pull = require(`../commands/${dir}/${file}`);
-            if(pull.name) {
-                client.commands.set(pull.name, pull);
-                console.info(`[INFO] Successfully loaded command ${file}`);
-            } else {
-                console.error(`[ERROR] An exception occurred while loading command ${file}.`);
-                continue;
-            } if(pull.aliases && Array.isArray(pull.aliases)) pull.aliases.forEach((alias) => client.aliases.set(alias, pull.name));
+module.exports = class CommandHandler {
+  constructor() {
+    this.commands = new Map();
+    this.rest = new REST({ version: "9" }).setToken(config.token);
+    this.commandsData = [];
+  }
+
+  async register(command) {
+    this.commands.set(command.data.name, command);
+    this.commandsData.push(command.data.toJSON());
+  }
+
+  async load() {
+    readdirSync("./src/commands/").forEach(async (dir) => {
+      const dirCommands = readdirSync(`./src/commands/${dir}/`).filter((file) =>
+        file.endsWith(".js")
+      );
+      for (let file of dirCommands) {
+        let command = require(`../commands/${dir}/${file}`);
+        if (!(command instanceof Command)) {
+          return;
         }
+
+        if (!command.name) {
+          return;
+        }
+
+        await this.register(new command());
+        console.info(`[INFO] Successfully loaded command ${file}`);
+      }
     });
-    console.info("[INFO] Finished loading commands.");
+  }
+
+  async deploy() {
+    try {
+      await this.rest.put(
+        Routes.applicationGuildCommands(config.clientId, config.guildId),
+        { body: this.commandsData }
+      );
+    } catch (e) {
+      console.log(
+        "[ERROR] Ha ocurrido un error intentando registrar un comando"
+      );
+      throw e;
+    }
+  }
 };
