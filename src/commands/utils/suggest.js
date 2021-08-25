@@ -8,8 +8,8 @@ module.exports = class SuggestCommand extends Command {
   constructor() {
     super();
     this.data = new SlashCommandBuilder()
-      .setName("test")
-      .setDescription("A command just for testing")
+      .setName("suggest")
+      .setDescription("Sugiere tus ideas al resto del servidor")
       .addStringOption((option) =>
         option
           .setName("sugerencia")
