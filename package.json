@@ -1,7 +1,7 @@
 {
-  "name": "blacklist",
+  "name": "migo",
   "version": "1.0.0",
-  "description": "Blacklist",
+  "description": "Bot used for Ajneb's discord server needs",
   "main": "src/index.js",
   "dependencies": {
     "discord.js": "^12.2.0",
