@@ -23,16 +23,23 @@ module.exports = class CommandHandler {
       );
       for (let file of dirCommands) {
         let command = require(`../commands/${dir}/${file}`);
+        try {
+          command = new command();
+        } catch (e) {
+          console.warn("[WARN] No se ha podido cargar el comando " + file);
+          continue;
+        }
+
         if (!(command instanceof Command)) {
-          return;
+          continue;
         }
 
-        if (!command.name) {
-          return;
+        if (!command.data.name) {
+          continue;
         }
 
-        await this.register(new command());
-        console.info(`[INFO] Successfully loaded command ${file}`);
+        await this.register(command);
+        console.log(`[INFO] Successfully loaded command ${command.data.name}`);
       }
     });
   }
