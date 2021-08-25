@@ -24,10 +24,10 @@ client.on("interactionCreate", async (interaction) => {
   const command = commandHandler.commands.get(commandName);
 
   try {
-    command.execute(interaction);
+    await command.execute(interaction);
   } catch (e) {
-    interaction.reply(
-      "Algo salió mal, por favor contacta con un administrador. error: `COMMAND_NOT_FOUND`"
+    await interaction.reply(
+      "Algo salió mal, por favor contacta con un administrador."
     );
     throw e;
   }
@@ -56,4 +56,4 @@ client
     console.error(`[INFO] An error occurred while logging in. (${err})`)
   );
 
-module.exports.client = client;
+exports.client = client;
