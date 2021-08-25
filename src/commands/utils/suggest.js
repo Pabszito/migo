@@ -1,5 +1,5 @@
 const SuggestSchema = require("../../schema/suggestion");
-const { Interaction } = require("discord.js");
+const { Interaction, MessageEmbed } = require("discord.js");
 const config = require("../../../config.json");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const Command = require("../../command");
@@ -35,7 +35,7 @@ module.exports = class SuggestCommand extends Command {
       return;
     }
 
-    let embed = new Discord.MessageEmbed()
+    let embed = new MessageEmbed()
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setDescription(
         `Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`
