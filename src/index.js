@@ -33,21 +33,21 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-// mongoose.connect(
-//   config.uri,
-//   {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//   },
-//   (err) => {
-//     if (err) {
-//       console.error(`[ERROR] Unable to connect to the Mongo database.`);
-//       return process.exit(1);
-//     }
-//     console.info(`[INFO] Connected to the Mongo database.`);
-//   }
-// );
+mongoose.connect(
+  config.uri,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  },
+  (err) => {
+    if (err) {
+      console.error(`[ERROR] Unable to connect to the Mongo database.`);
+      return process.exit(1);
+    }
+    console.info(`[INFO] Connected to the Mongo database.`);
+  }
+);
 
 client
   .login(config.token)
