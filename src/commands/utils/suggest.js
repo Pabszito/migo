@@ -3,7 +3,6 @@ const { Interaction, MessageEmbed } = require("discord.js");
 const config = require("../../../config.json");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const Command = require("../../command");
-const { client } = require("../../index");
 module.exports = class SuggestCommand extends Command {
   constructor() {
     super();
@@ -23,11 +22,12 @@ module.exports = class SuggestCommand extends Command {
    * @param {Interaction} interaction
    */
   async execute(interaction) {
-    let user = interaction.member;
+    const client = interaction.client;
+    let member = interaction.member;
     if (
-      user.roles.cache.size <= 1 ||
-      (user.roles.cache.has(config.utils.levelFiveRoleId) &&
-        user.roles.cache.size === 2)
+      member.roles.cache.size <= 1 ||
+      (member.roles.cache.has(config.utils.levelFiveRoleId) &&
+        member.roles.cache.size === 2)
     ) {
       interaction.reply(
         ":x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!"
@@ -36,24 +36,24 @@ module.exports = class SuggestCommand extends Command {
     }
 
     let embed = new MessageEmbed()
-      .setAuthor(user.displayName, user.displayAvatarURL())
+      .setAuthor(member.displayName, member.user.avatarURL())
       .setDescription(
         `Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`
       )
       .addField(`Sugerencia:`, interaction.options.getString("sugerencia"))
       .setTimestamp()
-      .setFooter("Migo", client.user.displayAvatarURL());
+      .setFooter("Migo", client.user.avatar);
 
     client.channels.cache
       .get(config.utils.suggestionChannel)
-      .send(embed)
+      .send({ embeds: [embed] })
       .then(async (msg) => {
         await msg.react(`✅`);
         await msg.react(`❌`);
 
         const suggestion = new SuggestSchema({
           id: msg.id,
-          author: user.displayName,
+          author: member.displayName,
           content: interaction.options.getString("sugerencia"),
         });
 
