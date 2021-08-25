@@ -3,7 +3,7 @@ const { Interaction, MessageEmbed } = require("discord.js");
 const config = require("../../../config.json");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const Command = require("../../command");
-
+const { client } = require("../../index");
 module.exports = class SuggestCommand extends Command {
   constructor() {
     super();
@@ -36,7 +36,7 @@ module.exports = class SuggestCommand extends Command {
     }
 
     let embed = new MessageEmbed()
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor(user.displayName, user.displayAvatarURL())
       .setDescription(
         `Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`
       )
