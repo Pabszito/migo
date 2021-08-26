@@ -1,6 +1,11 @@
 {
-    "token" : "Discord bot token goes here",
-    "prefix" : "-",
-    "uri" : "Mongo database URI goes here",
-    "lastReportId" : "0"
+    "token": "BOT'S-TOKEN",
+    "guildId": "704760040317386852 <-- AJNEB97'S GUILD",
+    "clientId": "CLIENT ID",
+    "uri": "MONGODB-URL",
+    "utils": {
+        "levelFiveRoleId": "",
+        "suggestionChannel": "",
+        "suggestionsResultsChannel": ""
+    }
 }
