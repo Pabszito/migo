@@ -1,50 +1,84 @@
-const SuggestSchema = require('../../schema/suggestion');
-const Discord = require('discord.js');
+const { Interaction, MessageEmbed } = require("discord.js");
+const config = require("../../../config.json");
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const Command = require("../../command");
 
-module.exports = {
-    name: "approve",
-    category: "utils",
-    description: "Aprueba una sugerencia",
-    run: async(client, message, args, guild) => {
-        if(!message.member.permissions.has("KICK_MEMBERS"))
-            return message.channel.send(`:x: | No tienes permisos para ejecutar ese comando.`);
+module.exports = class ApproveCommand extends Command {
+  constructor() {
+    super();
+    this.data = new SlashCommandBuilder()
+      .setName("approve")
+      .setDescription("Aprovar una sugerencia")
+      .addStringOption((option) =>
+        option
+          .setRequired(true)
+          .setName("id")
+          .setDescription("La id de la sugerencia que quieres aprobar")
+      )
+      .addStringOption((option) =>
+        option
+          .setRequired(false)
+          .setName("nota")
+          .setDescription(
+            "Una nota opcional de el por qué se aceptó esta sugerencia"
+          )
+      );
+  }
 
-        if(!args[0] || isNaN(args[0])) return message.channel.send(`:x: | Necesitas especificar la ID del mensaje de una sugerencia!`);
+  /**
+   * @param {Interaction} interaction
+   */
+  async execute(interaction) {
+    const client = interaction.client;
+    const member = interaction.member;
 
-        SuggestSchema.findOne({
-            id: args[0]
-        }, async(err, res) => {
-            if(err) return message.channel.send(`:x: | Ocurrio un error inesperado: ${err}`);
-            if(!res) return message.channel.send(`:x: | No se encontro una sugerencia con esa ID.`);
-
-            let yesCount;
-            let noCount;
-			
-            let suggestionMessage = await client.channels.cache.get("698332177997234218").messages.fetch(args[0])
-				.then(suggestionMessage => {
-					yesCount = suggestionMessage.reactions.cache.get("✅").count - 1;
-					noCount = suggestionMessage.reactions.cache.get("❌").count - 1;
-					suggestionMessage.delete();
-				}).catch(console.error);
-
-			if(!yesCount) yesCount = "0";
-			if(!noCount) noCount = "0";
-			
-            let embed = new Discord.MessageEmbed()
-                .setTitle(`Sugerencia aceptada!`)
-                .setDescription(`La siguiente sugerencia fue aceptada por ${message.author.tag}:`)
-                .addField("Votos", `:white_check_mark: - ${yesCount}\n:x: - ${noCount}`)
-                .addField("Autor", res.author)
-                .addField("Sugerencia", res.content)
-                .setFooter("Migo", client.user.displayAvatarURL())
-                .setTimestamp();
-
-            if(args[1]) embed.addField(`Respuesta`, args.slice(1).join(" "))
-
-            client.channels.cache.get("698332182011183161").send(embed);
-
-            SuggestSchema.findOneAndDelete({ id: args[0] });
-            message.channel.send(`:white_check_mark: | Has aceptado la sugerencia con ID \`${args[0]}\`!`)
-        });
+    if (!member.permissions.has("KICK_MEMBERS")) {
+      interaction.reply(`:x: | No tienes permisos para ejecutar ese comando.`);
+      return;
     }
+
+    const suggestionId = interaction.options.getString("id");
+    let optionalNote = interaction.options.getString("nota");
+
+    let channel = await client.channels.cache.get(
+      config.utils.suggestionChannel
+    );
+
+    channel.messages
+      .fetch(suggestionId)
+      .then((message) => {
+        let yesCount = message.reactions.cache.get("✅").count;
+        let noCount = message.reactions.cache.get("❌").count;
+        let suggestionContent = message.embeds[0].fields[0].value;
+
+        message.delete();
+
+        let embed = new MessageEmbed()
+          .setTitle(`Sugerencia aceptada!`)
+          .setDescription(
+            `La siguiente sugerencia fue aceptada por ${member.user.tag}:`
+          )
+          .addField(
+            "Votos",
+            `:white_check_mark: - ${yesCount}\n:x: - ${noCount}`
+          )
+          .addField("Autor", member.toString())
+          .addField("Sugerencia", suggestionContent || "suggestionContent")
+          .setFooter("Migo", client.user.displayAvatarURL())
+          .setTimestamp();
+
+        if (optionalNote) {
+          embed.addField(`Respuesta`, optionalNote);
+        }
+
+        client.channels.cache
+          .get(config.utils.suggestionsResultsChannel)
+          .send({ embeds: [embed] });
+      })
+      .catch(console.error);
+
+    interaction.reply(
+      `:white_check_mark: | Has aceptado la sugerencia con ID \`${suggestionId}\`!`
+    );
+  }
 };
