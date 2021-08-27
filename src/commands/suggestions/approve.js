@@ -8,7 +8,7 @@ module.exports = class ApproveCommand extends Command {
     super();
     this.data = new SlashCommandBuilder()
       .setName("approve")
-      .setDescription("Aprovar una sugerencia")
+      .setDescription("Aprobar una sugerencia")
       .addStringOption((option) =>
         option
           .setRequired(true)
