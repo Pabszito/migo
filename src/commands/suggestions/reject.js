@@ -1,5 +1,6 @@
-const SuggestSchema = require("../../schema/suggestion");
-const Discord = require("discord.js");
+const { Interaction, MessageEmbed, Message } = require("discord.js");
+const config = require("../../../config.json");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const Command = require("../../command");
 
 module.exports = class Reject extends Command {
