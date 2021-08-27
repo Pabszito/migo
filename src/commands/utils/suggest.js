@@ -39,6 +39,7 @@ module.exports = class SuggestCommand extends Command {
 
     let embed = new MessageEmbed()
       .setTitle(`Sugerencia ${suggestionId}`)
+      .setColor("YELLOW")
       .setAuthor(member.displayName, member.user.avatarURL())
       .setDescription(
         `Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`
