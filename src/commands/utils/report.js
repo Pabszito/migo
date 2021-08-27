@@ -1,6 +1,4 @@
-const ReportSchema = require("../../schema/report");
 const { Interaction, MessageEmbed } = require("discord.js");
-const yaml = require("js-yaml");
 const fs = require("fs");
 const Command = require("../../command");
 const { SlashCommandBuilder } = require("@discordjs/builders");
