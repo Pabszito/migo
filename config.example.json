@@ -4,8 +4,11 @@
     "clientId": "CLIENT ID",
     "uri": "MONGODB-URL",
     "utils": {
-        "levelFiveRoleId": "",
-        "suggestionChannel": "",
-        "suggestionsResultsChannel": ""
-    }
+        "levelFiveRoleId": "id",
+        "suggestionChannel": "id",
+        "suggestionsResultsChannel": "id",
+        "reportChannel": "id",
+        "reportsResultsChannel": "id"
+    },
+    "lastReportId": 0
 }
