@@ -60,6 +60,7 @@ module.exports = class ApproveCommand extends Command {
 
         let embed = new MessageEmbed()
           .setTitle(`Sugerencia aceptada!`)
+          .setColor("GREEN")
           .setDescription(
             `La siguiente sugerencia fue aceptada por ${member.user.tag}:`
           )
