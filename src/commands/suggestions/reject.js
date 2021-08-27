@@ -1,51 +1,77 @@
-const SuggestSchema = require('../../schema/suggestion');
-const Discord = require('discord.js');
+const SuggestSchema = require("../../schema/suggestion");
+const Discord = require("discord.js");
+const Command = require("../../command");
 
-module.exports = {
-    name: "reject",
-    category: "utils",
-    description: "Aprueba una sugerencia",
-    run: async(client, message, args, guild) => {
-        if(!message.member.permissions.has("KICK_MEMBERS"))
-            return message.channel.send(`:x: | No tienes permisos para ejecutar ese comando.`);
+module.exports = class Reject extends Command {
+  constructor() {
+    super();
+  }
 
-        if(!args[0] || isNaN(args[0])) return message.channel.send(`:x: | Necesitas especificar la ID del mensaje de una sugerencia!`);
+  async execute() {
+    if (!message.member.permissions.has("KICK_MEMBERS"))
+      return message.channel.send(
+        `:x: | No tienes permisos para ejecutar ese comando.`
+      );
 
-        SuggestSchema.findOne({
-            id: args[0]
-        }, async(err, res) => {
-            if(err) return message.channel.send(`:x: | Ocurrio un error inesperado: ${err}`);
-            if(!res) return message.channel.send(`:x: | No se encontro una sugerencia con esa ID.`);
+    if (!args[0] || isNaN(args[0]))
+      return message.channel.send(
+        `:x: | Necesitas especificar la ID del mensaje de una sugerencia!`
+      );
 
-            let yesCount;
-            let noCount;
-			
-            let suggestionMessage = await client.channels.cache.get("698332177997234218").messages.fetch(args[0])
-				.then(suggestionMessage => {
-					yesCount = suggestionMessage.reactions.cache.get("✅").count - 1;
-					noCount = suggestionMessage.reactions.cache.get("❌").count - 1;
-					suggestionMessage.delete();
-				}).catch(console.error);
+    SuggestSchema.findOne(
+      {
+        id: args[0],
+      },
+      async (err, res) => {
+        if (err)
+          return message.channel.send(
+            `:x: | Ocurrio un error inesperado: ${err}`
+          );
+        if (!res)
+          return message.channel.send(
+            `:x: | No se encontro una sugerencia con esa ID.`
+          );
 
-			if(!yesCount) yesCount = "0";
-			if(!noCount) noCount = "0";
+        let yesCount;
+        let noCount;
 
-            let embed = new Discord.MessageEmbed()
-                .setTitle(`Sugerencia rechazada.`)
-                .setDescription(`La siguiente sugerencia fue rechazada por ${message.author.tag}:`)
-                .addField("Votos", `:white_check_mark: - ${yesCount}\n:x: - ${noCount}`)
-                .addField("Autor", res.author)
-                .addField("Sugerencia", res.content)
-                .setFooter("Migo", client.user.displayAvatarURL())
-                .setTimestamp();
+        let suggestionMessage = await client.channels.cache
+          .get("698332177997234218")
+          .messages.fetch(args[0])
+          .then((suggestionMessage) => {
+            yesCount = suggestionMessage.reactions.cache.get("✅").count - 1;
+            noCount = suggestionMessage.reactions.cache.get("❌").count - 1;
+            suggestionMessage.delete();
+          })
+          .catch(console.error);
 
-            if(args[1]) embed.addField(`Respuesta`, args.slice(1).join(" "))
+        if (!yesCount) yesCount = "0";
+        if (!noCount) noCount = "0";
 
-            client.channels.cache.get("698332182011183161").send(embed);
+        let embed = new Discord.MessageEmbed()
+          .setTitle(`Sugerencia rechazada.`)
+          .setDescription(
+            `La siguiente sugerencia fue rechazada por ${message.author.tag}:`
+          )
+          .addField(
+            "Votos",
+            `:white_check_mark: - ${yesCount}\n:x: - ${noCount}`
+          )
+          .addField("Autor", res.author)
+          .addField("Sugerencia", res.content)
+          .setFooter("Migo", client.user.displayAvatarURL())
+          .setTimestamp();
 
-            SuggestSchema.findOneAndDelete({ id: args[0] });
+        if (args[1]) embed.addField(`Respuesta`, args.slice(1).join(" "));
 
-            message.channel.send(`:white_check_mark: | Has rechazado la sugerencia con ID \`${args[0]}\``)
-        });
-    }
+        client.channels.cache.get("698332182011183161").send(embed);
+
+        SuggestSchema.findOneAndDelete({ id: args[0] });
+
+        message.channel.send(
+          `:white_check_mark: | Has rechazado la sugerencia con ID \`${args[0]}\``
+        );
+      }
+    );
+  }
 };
