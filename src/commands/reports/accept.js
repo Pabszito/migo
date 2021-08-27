@@ -1,61 +1,101 @@
-const ReportSchema = require('../../schema/report');
-const Discord = require('discord.js');
+const { MessageEmbed, Message, Interaction } = require("discord.js");
+const config = require("../../../config.json");
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const Command = require("../../command");
 
-module.exports = {
-    name: "accept",
-    category: "utils",
-    description: "Aprueba un reporte",
-    run: async(client, message, args, guild) => {
-        if(!message.member.permissions.has("KICK_MEMBERS"))
-            return message.channel.send(`:x: | No tienes permisos para ejecutar ese comando.`);
+module.exports = class AcceptCommand extends Command {
+  constructor() {
+    super();
+    this.data = new SlashCommandBuilder()
+      .setName("accept")
+      .setDescription("Aceptar un reporte")
+      .addStringOption((option) =>
+        option
+          .setRequired(true)
+          .setName("id")
+          .setDescription("Id del mensaje del reporte que quieres aceptar")
+      )
+      .addStringOption((option) =>
+        option
+          .setRequired(false)
+          .setName("respuesta")
+          .setDescription(
+            "Una respuesta opcional del por qué se aceptó este reporte"
+          )
+      );
+  }
 
-        if(!args[0] || isNaN(args[0])) return message.channel.send(`:x: | Necesitas especificar la ID del mensaje de un reporte!`);
+  /**
+   * @param {Interaction} interaction
+   */
+  async execute(interaction) {
+    const client = interaction.client;
+    const member = interaction.member;
+    const reportId = interaction.options.getString("id");
+    const optionalResponse = interaction.options.getString("respuesta");
 
-        ReportSchema.findOne({
-            id: args[0]
-        }, async(err, res) => {
-            if(err) return message.channel.send(`:x: | Ocurrio un error inesperado: \`${err}\``);
-            if(!res) return message.channel.send(`:x: | No se encontro un reporte con esa ID.`);
-			
-            await client.channels.cache.get("817874781831561288").messages.fetch(res.messageId)
-				.then(msg => {
-					msg.delete();
-				}).catch(console.error);
-			
-            /**
-            * id: Number,
-            * messageId: String,
-            * author: String,
-            * reportedMember: String,
-            * reason: String,
-            * attachments: Array
-            */
-
-            let author = await client.users.fetch(res.author);
-            let reportedMember = await client.users.fetch(res.reportedMember);
-
-            let embed = new Discord.MessageEmbed()
-                .setTitle(`Reporte aceptado!`)
-                .setDescription(`El siguiente reporte fue aceptado por ${message.author.tag}:`)
-                .addField("Reportante", author.tag + " (ID: " + author.id + ")")
-                .addField("Reportado", reportedMember.tag + " (ID: " + reportedMember.id + ")")
-                .addField("Razón", res.reason)
-                .addField("Respuesta", args[1] ? args.slice(1).join(" ") : "Gracias por reportar.")
-                .addField("Pruebas:", '‎', false)
-                .setImage(`${res.image}`)
-                .setFooter("Migo • #" + res.id, client.user.displayAvatarURL())
-                .setTimestamp();
-
-            client.channels.cache.get("770705035650269204").send(embed);
-
-            ReportSchema.findOneAndRemove({id: args[0]}, function (err, report) {
-                if (err) {
-                    console.log(err)
-                } else {
-                    console.log("Removed Report : ", report);
-                }
-            });
-            message.channel.send(`:white_check_mark: | Has aceptado el reporte con ID \`${args[0]}\`!`)
-        });
+    if (!member.permissions.has("KICK_MEMBERS")) {
+      interaction.reply(`:x: | No tienes permisos para ejecutar ese comando.`);
+      return;
     }
+
+    if (isNaN(reportId)) {
+      interaction.reply(
+        `:x: | Necesitas especificar la ID del mensaje de un reporte!`
+      );
+      return;
+    }
+
+    await client.channels.cache
+      .get(config.utils.reportChannel)
+      .messages.fetch(reportId)
+      .then(async (/** @type Message */ message) => {
+        let authorFieldValue = message.embeds[0].fields[0].value;
+        let reportedFieldValue = message.embeds[0].fields[1].value;
+
+        let author = await client.users.fetch(
+          authorFieldValue.slice(authorFieldValue.length - 19).replace(/\)/, "")
+        );
+
+        let reportedMember = await client.users.fetch(
+          reportedFieldValue
+            .slice(reportedFieldValue.length - 19)
+            .replace(/\)/, "")
+        );
+
+        let embed = new MessageEmbed()
+          .setTitle(`Reporte aceptado!`)
+          .setColor("DARK_GREEN")
+          .setDescription(
+            `El siguiente reporte fue aceptado por ${message.author.tag}:`
+          )
+          .addField("Reportante", author.tag + " (ID: " + author.id + ")")
+          .addField(
+            "Reportado",
+            reportedMember.tag + " (ID: " + reportedMember.id + ")"
+          )
+          .addField("Razón", message.embeds[0].fields[2].value)
+          .addField(
+            "Respuesta",
+            optionalResponse ? optionalResponse : "Gracias por reportar."
+          )
+          .addField("Pruebas:", "‎", false)
+          .setImage(message.embeds[0].image)
+          .setFooter(
+            message.embeds[0].footer.text,
+            message.embeds[0].footer.iconURL
+          )
+          .setTimestamp();
+        message.delete();
+
+        client.channels.cache
+          .get(config.utils.reportsResultsChannel)
+          .send({ embeds: [embed] });
+      })
+      .catch(console.error);
+
+    interaction.reply(
+      `:white_check_mark: | Has aceptado el reporte con ID \`${reportId}\`!`
+    );
+  }
 };

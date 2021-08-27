@@ -1,50 +1,66 @@
-const ReportSchema = require('../../schema/report');
-const Discord = require('discord.js');
+const ReportSchema = require("../../schema/report");
+const { Interaction, MessageEmbed } = require("discord.js");
 const yaml = require("js-yaml");
-const fs = require('fs');
-module.exports = {
-  name: "report",
-  category: "utils",
-  description: "Reporta a un usuario!",
-  run: async(client, message, args, guild) => {
+const fs = require("fs");
+const Command = require("../../command");
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const config = require("../../../config.json");
 
-      let reportedUser = message.mentions.users.first();
+module.exports = class ReportCommand extends Command {
+  constructor() {
+    super();
+    this.data = new SlashCommandBuilder()
+      .setName("report")
+      .setDescription("Reportar a un usuario")
+      .addUserOption((option) =>
+        option
+          .setRequired(true)
+          .setName("reportado")
+          .setDescription("La persona que quieres reportar")
+      )
+      .addStringOption((option) =>
+        option
+          .setRequired(true)
+          .setName("razón")
+          .setDescription(
+            "La razón por la cual estás reportando a este usuario"
+          )
+      );
+  }
 
-      const attachments = message.attachments.size ? message.attachments.map(attachment => attachment.proxyURL) : null;
-      if(!args[1]) return message.channel.send(`:x: | Necesitas especificar un usuario y una razon!`);
-      if(!attachments) return message.channel.send(`:x: | Necesitas subir una imagen que funcione como evidencia!`)
-      
-      let reportId = parseInt(client.config.lastReportId) + 1;
-      let config = client.config;
+  /**
+   * @param {Interaction} interaction
+   */
+  async execute(interaction) {
+    const reportedUser = interaction.options.getUser("reportado");
+    const client = interaction.client;
+    let reportId = parseInt(client.config.lastReportId) + 1;
 
-      config.lastReportId = reportId;
+    config.lastReportId = reportId;
 
-      await fs.writeFileSync('./config.json', JSON.stringify(config), 'utf8');
+    await fs.writeFileSync("./config.json", JSON.stringify(config), "utf8");
 
-      let embed = new Discord.MessageEmbed()
-          .setAuthor(message.author.tag, message.author.displayAvatarURL())
-          .setTitle(`Hemos recibido un reporte nuevo!`)
-          .addField("Reportante:", `${message.author.tag} (ID: ${message.author.id})`)
-          .addField(`Reportado:`, `${reportedUser.tag} (ID: ${reportedUser.id})`)
-          .addField("Razón:", `${args.slice(1).join(" ")}`)
-          .addField("Archivos adjuntos:", '‎', false)
-          .setImage(`${attachments ? `${attachments.join('\n')}` : null}`)
-          .setFooter(`Migo • #${reportId}`, client.user.displayAvatarURL())
-          .setTimestamp();
+    let embed = new MessageEmbed()
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setColor("YELLOW")
+      .setTitle(`Hemos recibido un reporte nuevo!`)
+      .addField(
+        "Reportante:",
+        `${interaction.user.tag} (ID: ${interaction.user.id})`
+      )
+      .addField(`Reportado:`, `${reportedUser.tag} (ID: ${reportedUser.id})`)
+      .addField("Razón:", `${interaction.options.getString("razón")}`)
+      .addField("Archivos adjuntos:", "‎", false)
+      // .setImage(`${attachments ? `${attachments.join("\n")}` : null}`)
+      .setFooter(`Migo • #${reportId}`, client.user.displayAvatarURL())
+      .setTimestamp();
 
-      let reportMessage = await client.channels.cache.get("817874781831561288").send(embed);
+    await client.channels.cache
+      .get(config.utils.reportChannel)
+      .send({ embeds: [embed] });
 
-      const report = new ReportSchema({
-            id: reportId,
-            messageId: reportMessage.id,
-            author: message.author.id,
-            reportedMember: reportedUser.id,
-            reason: args.slice(1).join(" "),
-            image: attachments.join('\n')
-      });
-
-      report.save();
-      
-      return message.channel.send(`:white_check_mark: | Tu reporte fue enviado con exito, ${message.author}!`)
+    interaction.reply(
+      `:white_check_mark: | Tu reporte fue enviado con exito, puedes ver su progreso en <#${config.utils.reportChannel}>`
+    );
   }
 };
