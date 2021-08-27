@@ -35,7 +35,10 @@ module.exports = class SuggestCommand extends Command {
       return;
     }
 
+    let suggestionId = this.generateId();
+
     let embed = new MessageEmbed()
+      .setTitle(`Sugerencia ${suggestionId}`)
       .setAuthor(member.displayName, member.user.avatarURL())
       .setDescription(
         `Hemos recibido una sugerencia! Vota con :white_check_mark: o con :x: para que sepamos si te gusta la idea o no.`
@@ -51,9 +54,15 @@ module.exports = class SuggestCommand extends Command {
         await msg.react(`✅`);
         await msg.react(`❌`);
 
+        msg.startThread({
+          name: `Sugerencia ${suggestionId}`,
+          autoArchiveDuration: 24 * 60, // Time in minutes, 24h
+          reason: `Needed for ${interaction.user.tag} suggestion`,
+        });
+
         const suggestion = new SuggestSchema({
           id: msg.id,
-          author: member.displayName,
+          author: interaction.user.username,
           content: interaction.options.getString("sugerencia"),
         });
 
@@ -63,5 +72,17 @@ module.exports = class SuggestCommand extends Command {
     interaction.reply(
       `:white_check_mark: | Tu sugerencia fue enviada con exito, puedes ver su progreso en <#${config.utils.suggestionChannel}>`
     );
+  }
+
+  generateId() {
+    const LENGTH = 4;
+    const KEYS =
+      "abcdefghijklmnopqrstubwsyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    let code = "";
+    for (let i = 0; i < LENGTH; i++) {
+      code += KEYS.charAt(Math.floor(Math.random() * KEYS.length));
+    }
+
+    return code;
   }
 };
