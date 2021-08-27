@@ -1,4 +1,3 @@
-const SuggestSchema = require("../../schema/suggestion");
 const { Interaction, MessageEmbed } = require("discord.js");
 const config = require("../../../config.json");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -60,14 +59,6 @@ module.exports = class SuggestCommand extends Command {
           autoArchiveDuration: 24 * 60, // Time in minutes, 24h
           reason: `Needed for ${interaction.user.tag} suggestion`,
         });
-
-        const suggestion = new SuggestSchema({
-          id: msg.id,
-          author: interaction.user.username,
-          content: interaction.options.getString("sugerencia"),
-        });
-
-        suggestion.save();
       });
 
     interaction.reply(
