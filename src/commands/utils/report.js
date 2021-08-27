@@ -32,16 +32,17 @@ module.exports = class ReportCommand extends Command {
   async execute(interaction) {
     const reportedUser = interaction.options.getUser("reportado");
     const client = interaction.client;
-    let reportId = parseInt(client.config.lastReportId) + 1;
+    let reportMessageId = parseInt(client.config.lastReportId) + 1;
 
-    config.lastReportId = reportId;
+    config.lastReportId = reportMessageId;
 
     await fs.writeFileSync("./config.json", JSON.stringify(config), "utf8");
-
+    let reportId = this.generateId();
     let embed = new MessageEmbed()
+      .setTitle(`Reporte ${reportId}`)
       .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setColor("YELLOW")
-      .setTitle(`Hemos recibido un reporte nuevo!`)
+      .setDescription(`Hemos recibido un reporte nuevo!`)
       .addField(
         "Reportante:",
         `${interaction.user.tag} (ID: ${interaction.user.id})`
@@ -50,15 +51,34 @@ module.exports = class ReportCommand extends Command {
       .addField("Razón:", `${interaction.options.getString("razón")}`)
       .addField("Archivos adjuntos:", "‎", false)
       // .setImage(`${attachments ? `${attachments.join("\n")}` : null}`)
-      .setFooter(`Migo • #${reportId}`, client.user.displayAvatarURL())
+      .setFooter(`Migo • #${reportMessageId}`, client.user.displayAvatarURL())
       .setTimestamp();
 
     await client.channels.cache
       .get(config.utils.reportChannel)
-      .send({ embeds: [embed] });
+      .send({ embeds: [embed] })
+      .then((message) => {
+        message.startThread({
+          name: `Reporte ${reportId}`,
+          autoArchiveDuration: 24 * 60, // Time in minutes, 24h
+          reason: `Needed for ${interaction.user.tag} report`,
+        });
+      });
 
     interaction.reply(
       `:white_check_mark: | Tu reporte fue enviado con exito, puedes ver su progreso en <#${config.utils.reportChannel}>`
     );
+  }
+
+  generateId() {
+    const LENGTH = 4;
+    const KEYS =
+      "abcdefghijklmnopqrstubwsyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    let code = "";
+    for (let i = 0; i < LENGTH; i++) {
+      code += KEYS.charAt(Math.floor(Math.random() * KEYS.length));
+    }
+
+    return code;
   }
 };

@@ -52,9 +52,7 @@ module.exports = class ApproveCommand extends Command {
         let noCount = message.reactions.cache.get("❌").count;
         let suggestionContent = message.embeds[0].fields[0].value;
 
-        if (message.hasThread) {
-          message.thread.delete();
-        }
+        message.thread.delete();
 
         message.delete();
 

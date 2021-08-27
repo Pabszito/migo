@@ -86,6 +86,9 @@ module.exports = class DenyCommand extends Command {
             message.embeds[0].footer.iconURL
           )
           .setTimestamp();
+
+        message.thread.delete();
+
         message.delete();
 
         client.channels.cache
