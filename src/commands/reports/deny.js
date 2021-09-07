@@ -13,7 +13,7 @@ module.exports = class DenyCommand extends Command {
         option
           .setRequired(true)
           .setName("id")
-          .setDescription("Id del mensaje del reporte que quieres denegar")
+          .setDescription("ID del reporte que quieres denegar")
       )
       .addStringOption((option) =>
         option
@@ -104,7 +104,7 @@ module.exports = class DenyCommand extends Command {
           return;
         }
 
-        interaction.reply(":x: Algo salió mal.");
+        interaction.reply(":x: Algo salió mal. Por favor intenta de nuevo mas tarde.");
       });
 
     }
