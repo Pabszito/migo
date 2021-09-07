@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 module.exports = {
   name: "eval",
   category: "developer",
-  description: "Replies with 'Hello world'.",
+  description: "Runs an specific piece of code.",
   run: async (client, message, args, guild) => {
     let allowedPeople = [
       "447902653842980875",
