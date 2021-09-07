@@ -46,7 +46,6 @@ module.exports = class Reject extends Command {
 
     channel.messages
       .fetch(suggestionId)
-
       .then((/** @type Message */ message) => {
         let yesCount = message.reactions.cache.get("✅").count;
         let noCount = message.reactions.cache.get("❌").count;
@@ -78,11 +77,18 @@ module.exports = class Reject extends Command {
         client.channels.cache
           .get(config.utils.suggestionsResultsChannel)
           .send({ embeds: [embed] });
-      })
-      .catch(console.error);
 
-    interaction.reply(
-      `:white_check_mark: | Has rechazado la sugerencia con ID \`${suggestionId}\`!`
-    );
+        interaction.reply(
+          `:white_check_mark: | Has rechazado la sugerencia con ID \`${suggestionId}\`!`
+        );
+      })
+      .catch((err) => {
+        if (err.code === 10008) {
+          interaction.reply(":x: No se ha encontrado el mensaje");
+          return;
+        }
+
+        interaction.reply(":x: Algo salió mal.");
+      });
   }
 };

@@ -92,13 +92,20 @@ module.exports = class DenyCommand extends Command {
         message.delete();
 
         client.channels.cache
-          .get(config.utils.reportsResultsChannel)
-          .send({ embeds: [embed] });
+        .get(config.utils.reportsResultsChannel)
+        .send({ embeds: [embed] });
+        interaction.reply(
+          `:white_check_mark: | Has denegado el reporte con ID \`${reportId}\`!`
+        );
       })
-      .catch(console.error);
+      .catch((err) => {
+        if (err.code === 10008) {
+          interaction.reply(":x: No se ha encontrado el mensaje");
+          return;
+        }
 
-    interaction.reply(
-      `:white_check_mark: | Has denegado el reporte con ID \`${reportId}\`!`
-    );
-  }
+        interaction.reply(":x: Algo salió mal.");
+      });
+
+    }
 };
