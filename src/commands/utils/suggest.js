@@ -34,7 +34,8 @@ module.exports = class SuggestCommand extends Command {
       return;
     }
 
-    let suggestionId = this.generateId();
+    let suggestionId = parseInt(client.config.lastSuggestionId) + 1;
+    client.config.lastSuggestionId = suggestionId;
 
     let embed = new MessageEmbed()
       .setTitle(`Sugerencia ${suggestionId}`)
@@ -64,17 +65,5 @@ module.exports = class SuggestCommand extends Command {
     interaction.reply(
       `:white_check_mark: | Tu sugerencia fue enviada con exito, puedes ver su progreso en <#${config.utils.suggestionChannel}>`
     );
-  }
-
-  generateId() {
-    const LENGTH = 4;
-    const KEYS =
-      "abcdefghijklmnopqrstubwsyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    let code = "";
-    for (let i = 0; i < LENGTH; i++) {
-      code += KEYS.charAt(Math.floor(Math.random() * KEYS.length));
-    }
-
-    return code;
   }
 };

@@ -10,5 +10,6 @@
         "reportChannel": "id",
         "reportsResultsChannel": "id"
     },
-    "lastReportId": 0
+    "lastReportId": 0,
+    "lastSuggestionId": 0
 }

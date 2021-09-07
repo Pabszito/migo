@@ -32,12 +32,11 @@ module.exports = class ReportCommand extends Command {
   async execute(interaction) {
     const reportedUser = interaction.options.getUser("reportado");
     const client = interaction.client;
-    let reportMessageId = parseInt(client.config.lastReportId) + 1;
+    let reportId = parseInt(client.config.lastReportId) + 1;
 
-    config.lastReportId = reportMessageId;
+    config.lastReportId = reportId;
 
     await fs.writeFileSync("./config.json", JSON.stringify(config), "utf8");
-    let reportId = this.generateId();
     let embed = new MessageEmbed()
       .setTitle(`Reporte ${reportId}`)
       .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
@@ -51,7 +50,7 @@ module.exports = class ReportCommand extends Command {
       .addField("Razón:", `${interaction.options.getString("razón")}`)
       .addField("Archivos adjuntos:", "‎", false)
       // .setImage(`${attachments ? `${attachments.join("\n")}` : null}`)
-      .setFooter(`Migo • #${reportMessageId}`, client.user.displayAvatarURL())
+      .setFooter(`Migo • #${reportId}`, client.user.displayAvatarURL())
       .setTimestamp();
 
     await client.channels.cache
@@ -68,17 +67,5 @@ module.exports = class ReportCommand extends Command {
     interaction.reply(
       `:white_check_mark: | Tu reporte fue enviado con exito, puedes ver su progreso en <#${config.utils.reportChannel}>`
     );
-  }
-
-  generateId() {
-    const LENGTH = 4;
-    const KEYS =
-      "abcdefghijklmnopqrstubwsyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    let code = "";
-    for (let i = 0; i < LENGTH; i++) {
-      code += KEYS.charAt(Math.floor(Math.random() * KEYS.length));
-    }
-
-    return code;
   }
 };
