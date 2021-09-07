@@ -13,7 +13,7 @@ module.exports = class ApproveCommand extends Command {
         option
           .setRequired(true)
           .setName("id")
-          .setDescription("La id de la sugerencia que quieres aprobar")
+          .setDescription("La ID de la sugerencia que quieres aprobar")
       )
       .addStringOption((option) =>
         option
@@ -89,7 +89,7 @@ module.exports = class ApproveCommand extends Command {
           return;
         }
 
-        interaction.reply(":x: Algo salió mal.");
+        interaction.reply(":x: Algo salió mal. Por favor intenta de nuevo mas tarde.");
       });
   }
 };
