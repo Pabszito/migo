@@ -104,7 +104,7 @@ module.exports = class AcceptCommand extends Command {
           return;
         }
 
-        interaction.reply(":x: Algo salió mal.");
+        interaction.reply(":x: Algo salió mal. Por favor intenta de nuevo mas tarde.");
       });
   }
 };
