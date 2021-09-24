@@ -14,15 +14,13 @@ module.exports = class RejectCommand extends Command {
                     type: 4,
                     name: 'id',
                     description: 'El identificador de la sugerencia que deseas rechazar.',
-                    required: true,
-                    choices: undefined
+                    required: true
                 },
                 {
                     type: 3,
                     name: 'response',
                     description: 'Una respuesta opcional para el usuario que realizo la sugerencia.',
-                    required: false,
-                    choices: undefined
+                    required: false
                 }
             ]
         }
