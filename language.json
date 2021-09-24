@@ -1,0 +1,50 @@
+{
+    "general": {
+        "unknown_interaction_error" : ":x: Lo sentimos, pero ha ocurrido un error desconocido. Por favor intenta de nuevo mas tarde.",
+        "no_permissions" : ":x: No tienes suficientes permisos para utilizar ese comando."
+    },
+    "suggest": {
+        "suggestion_sent" : ":white_check_mark: Tu sugerencia ha sido enviada con exito.",
+        "embed": {            
+            "description" : "Hemos recibido una sugerencia nueva! Vota con :white_check_mark: si estas de acuerdo o, de lo contrario, vota con :x:. Ten en cuenta que el uso de multicuentas en sugerencias es sancionable.",
+            "field" : "Sugerencia"
+        },
+        "approve": {
+            "suggestion_not_found" : ":x: | No se encontro una sugerencia con esa ID.",
+            "suggestion_approved" : ":white_check_mark: | Has aceptado la sugerencia con el ID `#%id%`",
+            "default_approval_reason" : "Ninguna respuesta adicional especificada.",
+            "embed": {
+                "title": "Sugerencia aceptada!",
+                "description" : "La siguiente sugerencia fue aceptada por %staff%:",
+                "fields": {
+                    "votes" : "Votos",
+                    "suggestion" : "Sugerencia",
+                    "response" : "Respuesta adicional",
+                    "author" : "Autor"
+                }
+            }
+        },
+        "reject" : {
+            "suggestion_not_found" : ":x: | No se encontro una sugerencia con esa ID.",
+            "suggestion_rejected" : ":white_check_mark: | Has rechazado la sugerencia con el ID `#%id%`",
+            "default_rejection_reason" : "Ninguna respuesta adicional especificada.",
+            "embed": {
+                "title": "Sugerencia rechazada.",
+                "description" : "La siguiente sugerencia fue rechazada por %staff%:",
+                "fields": {
+                    "votes" : "Votos",
+                    "suggestion" : "Sugerencia",
+                    "response" : "Respuesta adicional",
+                    "author" : "Autor"
+                }
+            }
+        }
+    },
+    "report": {
+        "report_sent" : ":white_check_mark: | Tu reporte fue enviado con exito.",
+        "embed" : {
+            "title" : "Hemos recibido un reporte nuevo!",
+            "description" : ""
+        }
+    }
+}

@@ -2,16 +2,18 @@
   "name": "blacklist",
   "version": "1.0.0",
   "description": "Blacklist",
-  "main": "src/index.js",
+  "main": "index.js",
   "dependencies": {
-    "discord.js": "^12.2.0",
-    "js-yaml": "^3.14.0",
-    "mongoose": "^5.9.28"
+    "@discordjs/builders": "^0.6.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.20.2",
+    "discord.js": "^13.1.0",
+    "mongoose": "^5.9.28",
+    "winston": "^3.3.3"
   },
-  "devDependencies": {},
   "scripts": {
-    "start": "node src/index.js",
-    "test": "node src/index.js"
+    "start": "node index.js",
+    "test": "node index.js"
   },
   "repository": {
     "type": "git",

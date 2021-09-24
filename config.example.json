@@ -1,6 +1,24 @@
 {
-    "token" : "Discord bot token goes here",
-    "prefix" : "-",
-    "uri" : "Mongo database URI goes here",
-    "lastReportId" : "0"
+    "token": "Your bot token goes here",
+    "uri": "Your MongoDB URI goes here",
+    "lastReportId": 0,
+    "lastSuggestionId": 0,
+    "status": {
+        "type": "WATCHING",
+        "value": "your suggestions"
+    },
+    "redis": {
+        "hostname": "127.0.0.1",
+        "port": "6379"
+    },
+    "interactions": {
+        "client_id": "Your client ID goes here",
+        "guild_id": "Your guild ID goes here"
+    },
+    "channels": {
+        "suggestions": "Your suggestions channel goes here",
+        "suggestionsLogs": "Your suggestions logs channel goes here",
+        "reports": "Your reports channel goes here",
+        "reportsLogs": "Your reports logs channel goes here"
+    }
 }

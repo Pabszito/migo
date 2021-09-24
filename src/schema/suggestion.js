@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 const suggestion = new mongoose.Schema({
-    id: String,
+    id: Number,
+    messageId: String,
     author: String,
     content: String
 });
