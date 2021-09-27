@@ -34,7 +34,7 @@ module.exports = class RejectCommand extends Command {
         const member = interaction.member;
 
         const id = interaction.options.getInteger("id");
-        let response = interaction.options.getString("response");
+        const response = interaction.options.getString("response");
 
         if(!member.permissions.has("KICK_MEMBERS")) { // TODO: add permission to slash command directly
             return interaction.reply({
