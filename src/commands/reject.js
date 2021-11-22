@@ -63,6 +63,7 @@ module.exports = class RejectCommand extends Command {
                     : message.reactions.cache.get("❌").count - 1;
 
                 if(message.hasThread) { // Delete thread only if it wasn't deleted
+                    message.thread.setArchived(true);
                     message.thread.setLocked(true);
                 }
         
