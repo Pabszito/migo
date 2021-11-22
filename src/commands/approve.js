@@ -64,7 +64,7 @@ module.exports = class ApproveCommand extends Command {
                     : message.reactions.cache.get("❌").count - 1;
 
                 if(message.hasThread) { // Delete thread only if it wasn't deleted
-                    message.thread.delete();
+                    message.thread.setLocked(true);
                 }
         
                 message.delete();
