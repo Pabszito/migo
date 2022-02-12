@@ -33,9 +33,6 @@ module.exports = class SuggestCommand extends Command {
         if(member.roles.cache.size <= 1)
             return interaction.reply(`:x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!`);
 
-        if(member.roles.cache.has("698332177137401989") && message.member.roles.cache.size === 2)
-            return interaction.reply(`:x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!`);
-
         let suggestionId = parseInt(client.config.lastSuggestionId) + 1;
         client.config.lastSuggestionId = suggestionId;
 

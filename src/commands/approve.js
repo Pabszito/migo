@@ -1,4 +1,4 @@
-const { Interaction, MessageEmbed } = require('discord.js');
+const { Interaction } = require('discord.js');
 const Command  = require('../struct/command');
 const SuggestSchema = require('../schema/suggestion');
 const fs = require('fs');

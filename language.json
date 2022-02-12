@@ -43,8 +43,7 @@
     "report": {
         "report_sent" : ":white_check_mark: | Tu reporte fue enviado con exito.",
         "embed" : {
-            "title" : "Hemos recibido un reporte nuevo!",
-            "description" : ""
+            "title" : "Hemos recibido un reporte nuevo!"
         }
     }
 }
