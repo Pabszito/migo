@@ -49,8 +49,14 @@ module.exports = class ApproveCommand extends Command {
         SuggestSchema.findOne({
             id: id
         }, async(err, res) => {
-            if(err) return interaction.reply(client.language.general.unknown_interaction_error);
-            if(!res) return interaction.reply(client.language.suggest.approve.suggestion_not_found);
+            if(err) return interaction.reply({
+                content: client.language.general.unknown_interaction_error,
+                ephemeral: true
+            });
+            if(!res) return interaction.reply({
+                content: client.language.suggest.approve.suggestion_not_found,
+                ephemeral: true
+            });
 
             var approvals = 0;
             var rejections = 0;

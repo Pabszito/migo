@@ -31,7 +31,10 @@ module.exports = class SuggestCommand extends Command {
         const option = interaction.options.getString("sugerencia");
 
         if(member.roles.cache.size <= 1)
-            return interaction.reply(`:x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!`);
+            return interaction.reply({
+                content: `:x: | Necesitas ser nivel 10 o superior para ejecutar ese comando!`,
+                ephemeral: true
+            });
 
         let suggestionId = parseInt(client.config.lastSuggestionId) + 1;
         client.config.lastSuggestionId = suggestionId;
