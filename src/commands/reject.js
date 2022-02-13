@@ -112,7 +112,7 @@ module.exports = class RejectCommand extends Command {
                 }
             }
 
-            SuggestSchema.findOneAndDelete({ 
+            await SuggestSchema.findOneAndDelete({ 
                 id: id 
             });
 

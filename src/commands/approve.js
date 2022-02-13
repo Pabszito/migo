@@ -113,7 +113,7 @@ module.exports = class ApproveCommand extends Command {
                 }
             }
 
-            SuggestSchema.findOneAndDelete({ 
+            await SuggestSchema.findOneAndDelete({ 
                 id: id 
             });
 
