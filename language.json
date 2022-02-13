@@ -42,8 +42,47 @@
     },
     "report": {
         "report_sent" : ":white_check_mark: | Tu reporte fue enviado con exito.",
+        "image_error": ":x: | La imagen proporcionada es de un formato no soportado.",
         "embed" : {
-            "title" : "Hemos recibido un reporte nuevo!"
+            "title" : "Hemos recibido un reporte nuevo!",
+            "fields": {
+                "reporter": "Reportante:",
+                "reported": "Reportado:",
+                "reason": "Razón:",
+                "files": "Archivos adjuntos:"
+            }
+        },
+        "accept": {
+            "report_not_found": ":x: | No se encontro un reporte con esa ID.",
+            "report_accepted" : ":white_check_mark: | Has aceptado el reporte con el ID `#%id%`",
+            "default_accept_reason": "Gracias por reportar.",
+            "embed": {
+                "title": "Reporte aceptado!",
+                "description": "El siguiente reporte fue aceptado por %staff%:",
+                "fields": {
+                    "reporter": "Reportante",
+                    "reported": "Reportado",
+                    "reason": "Razón",
+                    "response": "Respuesta",
+                    "files": "Pruebas:"
+                }
+            }
+        },
+        "deny": {
+            "report_not_found": ":x: | No se encontro un reporte con esa ID.",
+            "report_denied" : ":white_check_mark: | Has rechazado el reporte con ID `#%id%`",
+            "default_deny_reason": "Reporte denegado.",
+            "embed": {
+                "title": "Reporte rechazado",
+                "description": "El siguiente reporte fue rechazado por %staff%:",
+                "fields": {
+                    "reporter": "Reportante",
+                    "reported": "Reportado",
+                    "reason": "Razón",
+                    "response": "Respuesta",
+                    "files": "Pruebas:"
+                }
+            }
         }
     }
 }
