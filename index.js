@@ -41,4 +41,15 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
+client.attachments = new Map();
+
+client.ws.on('INTERACTION_CREATE', (interaction) => {
+    if (interaction.data.name == 'report' && interaction.data.options[2].type == 11) {
+        client.attachments.set(
+            interaction.id,
+            interaction.data.resolved.attachments[interaction.data.options[2].value]
+        );
+    }
+});
+
 migo.start();
